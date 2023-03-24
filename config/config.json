@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "dwbXFY1d0Y0N4FZUqUDr",
+    "database": "rental",
+    "host": "containers-us-west-99.railway.app",
+    "dialect": "postgres",
+    "port": "7872"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
