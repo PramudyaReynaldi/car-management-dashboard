@@ -1,6 +1,6 @@
 const { cars } = require("./models");
 
-class CarController {
+class Cars {
    static records = [];
 
    constructor(params) {
@@ -47,4 +47,4 @@ class CarController {
    }
 }
 
-module.exports = CarController;
+module.exports = Cars;
