@@ -2,24 +2,27 @@ const express = require("express");
 const app = express();
 const pool = require("./db");
 const { PORT = 8000 } = process.env;
-const { cars } = require("./models");
+const { cars } = require("./app/models");
 const bodyParser = require("body-parser");
 const cloudinary = require("./config/cloudinary");
 const Car = require('./car');
+const routes = require('./config/routes');
 
 const jsonParser = bodyParser.json();
 
 // app.set('views', './views'); => Method pada Express yang digunakan untuk menentukan
 // direktori default untuk file template atau view yang akan digunakan pada aplikasi.
-// app.set("views", "./views");
+app.set("views", "./app/views");
 app.set("view engine", "ejs");
 
 // app.use(express.static('public')) => Middleware yang berfungsi untuk mengakses
 // file-file statis seperti gambar, file CSS, dan file JavaScript pada direktori public.
 app.use(express.static("public"));
 
+app.use(express.json())
+
 // CREATE
-app.post("/list-cars", jsonParser, async (req, res) => {
+app.post("/api/v1/list-cars", jsonParser, async (req, res) => {
    try {
       const dataCars = await cars.create({
          nama: req.body.nama,
@@ -34,14 +37,14 @@ app.post("/list-cars", jsonParser, async (req, res) => {
 });
 
 //READ
-app.get("/list-cars", jsonParser, async (req, res) => {
+app.get("/api/v1/list-cars", jsonParser, async (req, res) => {
    const dataCars = await cars.findAll();
    res.send(dataCars);
 });
 
 
 // UPDATE
-app.put("/list-cars/:id", jsonParser, async (req, res) => {
+app.put("/api/v1/list-cars/:id", jsonParser, async (req, res) => {
    try {
       const dataCars = await cars.findByPk(req.params.id);
       dataCars.nama = req.body.nama;
@@ -57,7 +60,7 @@ app.put("/list-cars/:id", jsonParser, async (req, res) => {
 });
 
 // DELETE
-app.delete("/list-cars/:id", async (req, res) => {
+app.delete("/api/v1/list-cars/:id", async (req, res) => {
    try {
       const dataCars = await cars.findByPk(req.params.id);
       dataCars.destroy();
@@ -66,6 +69,7 @@ app.delete("/list-cars/:id", async (req, res) => {
       res.status(422).send("Gagal menghapus");
    }
 });
+
 
 // VIEWS
 app.get("/", async (req, res) => {
@@ -85,6 +89,8 @@ app.get("/", async (req, res) => {
 app.get("/list-cars", async (req, res) => {
    res.render("list-cars", { title: "list-cars" });
 });
+
+app.use(routes);
 
 app.listen(PORT, () => {
    console.log(`Server nyala di https://localhost:${PORT}`);

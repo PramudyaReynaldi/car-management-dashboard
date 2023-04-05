@@ -1,4 +1,4 @@
-const { cars } = require("./models");
+const { cars } = require("./app/models");
 
 class Cars {
    static records = [];
