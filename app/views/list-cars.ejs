@@ -231,12 +231,21 @@
                </nav>
                <!-- End of Topbar -->
 
+               <div class="container py-3">
+                  <a href="#" class="text-dark"><b>Cars</b></a>
+                  <img src="asset/Vector.svg" alt="" />
+                  <a href="#" class="text-dark">List Cars</a>
+               </div>
+
                <!-- Begin Page Content -->
                <div class="container">
-                  <!-- Page Heading -->
-                  <h1 class="h3 mb-4 text-gray-800">List Car</h1>
-
-                  <button id="all" type="button" class="btn btn-outline-info">
+                  <div class="d-flex justify-content-between">
+                     <h3>List Car</h3>
+                     <a href="/createCar" class="btn btn-primary"
+                        >+ Add New car</a
+                     >
+                  </div>
+                  <button id="All" type="button" class="btn btn-outline-info">
                      All
                   </button>
                   <button id="Small" type="button" class="btn btn-outline-info">
@@ -272,6 +281,20 @@
                            <td><%= e.harga_sewa %></td>
                            <td><%= e.ukuran %></td>
                            <td><img src="<%= e.foto %>" /></td>
+                           <td>
+                              <a href="/update/<%= e.id %>">
+                                 <button type="button" class="btn btn-primary">
+                                    Edit
+                                 </button>
+                              </a>
+                              <button
+                                 type="button"
+                                 class="btn btn-danger"
+                                 onclick="handleDelete('<%= e.id %>')"
+                              >
+                                 Delete
+                              </button>
+                           </td>
                         </tr>
                         <% }); %>
                      </tbody>
@@ -357,25 +380,17 @@
       <script src="/sb-admin-2/js/sb-admin-2.min.js"></script>
 
       <script>
-         const handleInsertMenu = async () => {
-            const inputNama = document.getElementById("inputNama");
-            const inputSewa = document.getElementById("inputSewa");
-            const inputSize = document.getElementById("inputSize");
-            const inputFoto = document.getElementById("inputFoto");
-
-            const resp = await fetch("http://localhost:8000", {
-               method: "POST",
-               headers: {
-                  "Content-Type": "application/json",
-               },
-               body: JSON.stringify({
-                  nama: inputNama.value,
-                  harga_sewa: inputSewa.value,
-                  ukuran: inputSize.value,
-                  foto: inputFoto.value,
-               }),
-            });
-            location.reload();
+         const handleDelete = async (id) => {
+            if (confirm("Apakah Yakin Ingin Menghapus Data?") == true) {
+               const resp = await fetch(
+                  `http://localhost:8000/api/v1/list-cars/${id}`,
+                  {
+                     method: "DELETE",
+                  }
+               );
+               location.reload();
+            } else {
+            }
          };
       </script>
    </body>

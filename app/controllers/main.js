@@ -1,7 +1,4 @@
-const { auth } = require("./api/v1");
-
 module.exports = {
-   auth,
    index(req, res) {
       res.status(200).render("index");
    },
