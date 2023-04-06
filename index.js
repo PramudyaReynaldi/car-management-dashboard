@@ -5,8 +5,8 @@ const { PORT = 8000 } = process.env;
 const { cars } = require("./app/models");
 const bodyParser = require("body-parser");
 const cloudinary = require("./config/cloudinary");
-const Car = require('./car');
-const routes = require('./config/routes');
+const Car = require("./car");
+const routes = require("./config/routes");
 
 const jsonParser = bodyParser.json();
 
@@ -19,7 +19,7 @@ app.set("view engine", "ejs");
 // file-file statis seperti gambar, file CSS, dan file JavaScript pada direktori public.
 app.use(express.static("public"));
 
-app.use(express.json())
+app.use(express.json());
 
 // CREATE
 app.post("/api/v1/list-cars", jsonParser, async (req, res) => {
@@ -41,7 +41,6 @@ app.get("/api/v1/list-cars", jsonParser, async (req, res) => {
    const dataCars = await cars.findAll();
    res.send(dataCars);
 });
-
 
 // UPDATE
 app.put("/api/v1/list-cars/:id", jsonParser, async (req, res) => {
@@ -70,7 +69,6 @@ app.delete("/api/v1/list-cars/:id", async (req, res) => {
    }
 });
 
-
 // VIEWS
 app.get("/", async (req, res) => {
    let data = [];
@@ -84,6 +82,21 @@ app.get("/", async (req, res) => {
    res.render("list-cars", {
       data: data,
    });
+});
+
+app.get("/createCar", (req, res) => {
+   res.render("createCar");
+});
+
+app.get("/update/:id", async (req, res) => {
+   let data = [];
+   try {
+      const cars = await CarController.find(req.params.id);
+      data = cars;
+   } catch (error) {
+      console.log(error);
+   }
+   res.render("update", { data: data });
 });
 
 app.get("/list-cars", async (req, res) => {
