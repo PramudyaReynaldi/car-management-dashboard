@@ -1,0 +1,332 @@
+openapi: 3.0.0
+info:
+  title: Car Rentals - OpenAPI 3.0
+  description: Dokumentasi untuk API Rental Mobil
+  contact:
+    email: apiteam@swagger.io
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+  - url: http://rental-mobil.xyz
+tags:
+  - name: car
+    description: Everything about your cars
+  - name: auth
+    description: Authentication
+paths:
+  /list-cars:
+    get:
+      tags:
+        - car
+      summary: Get all car data
+      description: Listing all car data
+      operationId: getCars
+      responses:
+        '200':
+          $ref: '#/components/responses/Cars'
+        '404':
+          description: Cars not found
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - car
+      summary: Add a new car to database
+      description: Add a new car to database
+      operationId: createCar
+      requestBody:
+        description: Create a car in the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Car'
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/Car'
+        '405':
+          description: Invalid input
+      security:
+        - bearerAuth: []
+  /list-cars/{id}:
+    get:
+      tags:
+        - car
+      summary: Find car by ID
+      description: Returns a single car
+      operationId: getCarById
+      parameters:
+        - name: id
+          in: path
+          description: ID of car to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/Car'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Car not found
+    put:
+      tags:
+        - car
+      summary: Updates a car in the database with form data
+      description: ''
+      operationId: updateCarWithForm
+      parameters:
+        - name: id
+          in: path
+          description: ID of car that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/Car'
+        '405':
+          description: Invalid input
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - car
+      summary: Deletes a car
+      description: delete a car
+      operationId: deleteCar
+      parameters:
+        - name: id
+          in: path
+          description: Car id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Invalid id value
+      security:
+        - bearerAuth: []
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      security:
+        - bearerAuth: []
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register
+      operationId: register
+      requestBody:
+        description: Register
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: admin
+                lastName:
+                  type: string
+                  example: 123
+                email:
+                  type: string
+                  example: example@gmail.com
+                password:
+                  type: string
+                  example: password123
+                role:
+                  type: string
+                  example: user
+        required: true
+      responses:
+        '200':
+          description: Register sukses!
+        '404':
+          description: Gagal register!
+  /auth/login/{userId}:
+    get:
+      tags:
+        - admin
+      summary: Melihat detail user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Berhasil mendapatkan detail user
+        '404':
+          description: User tidak ditemukan
+    put:
+      tags:
+        - admin
+      summary: Mengedit user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                role:
+                  type: string
+                  enum:
+                    - user
+                    - admin
+                    - superadmin
+              required:
+                - name
+                - email
+                - role
+      responses:
+        '200':
+          description: Berhasil mengedit user
+        '404':
+          description: User tidak ditemukan
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - admin
+      summary: Menghapus user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Berhasil menghapus user
+        '404':
+          description: User tidak ditemukan
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    Car:
+      required:
+        - nama
+        - ukuran
+      type: object
+      properties:
+        nama:
+          type: string
+          example: Avanza
+        ukuran:
+          type: string
+          example: Medium
+        foto:
+          type: string
+          example: http://example.com/zx25r.jpg
+        harga_sewa:
+          type: number
+          example: 100000
+  requestBodies:
+    Car:
+      description: Car object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Car'
+  responses:
+    Car:
+      description: Car object
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: OK
+              data:
+                allOf:
+                  - $ref: '#/components/schemas/Car'
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                        example: 10
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updateAt:
+                        type: string
+                        format: date-time
+    Cars:
+      description: Cars list
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: OK
+              data:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Car'
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                          example: 10
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updateAt:
+                          type: string
+                          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

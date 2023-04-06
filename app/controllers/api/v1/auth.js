@@ -18,8 +18,6 @@ module.exports = {
          res.status(404).json({
             message: "Email tidak ditemukan!",
          });
-         
-         return res.redirect("/login")
       }
 
       const isPasswordCorrect = await checkPassword(password, user.password);
