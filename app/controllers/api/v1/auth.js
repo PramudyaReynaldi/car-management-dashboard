@@ -50,6 +50,26 @@ module.exports = {
       res.redirect("/login");
    },
 
+   async userList(req, res) {
+      try {
+         const list = await User.findAll();
+         res.status(201).json({
+            status: "OK",
+            data: {
+               list
+            }
+         })
+      }
+      
+      catch(err) {
+         res.status(400).json({
+            status: "FAIL",
+            message: err.message,
+         });
+      }
+      
+   },
+
    async register(req, res) {
       const { firstName, lastName, email, password } = req.body;
 
