@@ -13,7 +13,6 @@ apiRouter.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
 appRouter.get("/login", controllers.main.login);
 appRouter.get("/login", controllers.api.v1.auth.login);
-
 appRouter.get("/login", controllers.api.v1.auth.logout);
 
 apiRouter.get("/api/v1/list-cars", controllers.api.v1.cars.list);
@@ -24,8 +23,9 @@ apiRouter.delete("/api/v1/list-cars/:id",controllers.api.v1.cars.setCars, contro
 
 apiRouter.post("/api/v1/auth/register", controllers.api.v1.auth.register);
 apiRouter.post("/api/v1/auth/login", controllers.api.v1.auth.login);
-// apiRouter.get("/api/v1/auth/login", controllers.api.v1.auth.login);
 apiRouter.get("/api/v1/auth/whoami", controllers.api.v1.auth.authorize, controllers.api.v1.auth.whoami);
+
+apiRouter.get("/api/v1/auth/login", controllers.api.v1.auth.userList);
 
 
 // apiRouter.use(controllers.api.main.onLost);

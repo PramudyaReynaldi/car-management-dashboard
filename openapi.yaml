@@ -113,6 +113,25 @@ paths:
       security:
         - bearerAuth: []
   /auth/login:
+    get:
+      tags:
+        - auth
+      summary: Get all data users
+      description: Get all data users
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        '404':
+          $ref: '#/components/responses/UserNotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: []
+      
     post:
       tags:
         - auth
@@ -122,22 +141,18 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-              required:
-                - username
-                - password
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: OK
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
         '400':
-          description: Bad Request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
       security:
         - bearerAuth: []
   /auth/register:
@@ -265,6 +280,47 @@ components:
         harga_sewa:
           type: number
           example: 100000
+    UserList:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - username
+        - email
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+          format: int64
   requestBodies:
     Car:
       description: Car object
@@ -298,6 +354,14 @@ components:
                       updateAt:
                         type: string
                         format: date-time
+    BadRequest:
+      description: Invalid input data
+    Unauthorized:
+      description: Invalid username or password
+    InternalServerError:
+      description: Internal server error
+    UserNotFound:
+      description: Data users not found
     Cars:
       description: Cars list
       content:
